@@ -35,8 +35,18 @@ async function run() {
       const query = {_id: ObjectId(id)};
       const product = await productCollection.findOne(query);
       res.send(product);
-    })
-		// Update quantity
+    });
+		// Update delivery quantity
+		app.put('/product/:id', async (req, res) => {
+			const id = req.params.id;
+			const totalStock = req.body;
+			const filter = {_id: ObjectId(id)};
+			const options = {upsert: true};
+			const updateDoc = {$set: totalStock};
+			const result = await productCollection.updateOne(filter, updateDoc, options);
+			res.send(result);
+		});
+		// Update stock quantity
 		app.put('/product/:id', async (req, res) => {
 			const id = req.params.id;
 			const updateStock = req.body;
@@ -45,7 +55,15 @@ async function run() {
 			const updateDoc = {$set: updateStock};
 			const result = await productCollection.updateOne(filter, updateDoc, options);
 			res.send(result);
+		});
+		// Delete product
+		app.delete('/product/:id', async (req, res) => {
+			const id = req.params.id;
+			const filter = {_id: ObjectId(id)};
+			const result = await productCollection.deleteOne(filter);
+			res.send(result);
 		})
+
 	} finally {
 	}
 }
