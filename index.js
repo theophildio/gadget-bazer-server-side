@@ -26,7 +26,7 @@ async function run() {
 		app.get('/product', async (req, res) => {
 			const query = {};
 			const cursor = productCollection.find(query);
-			const products = await cursor.toArray();
+			const products = (await cursor.toArray()).reverse();
       res.send(products);
 		});
     // Load single data
@@ -53,6 +53,16 @@ async function run() {
 			const filter = {_id: ObjectId(id)};
 			const options = {upsert: true};
 			const updateDoc = {$set: updateStock};
+			const result = await productCollection.updateOne(filter, updateDoc, options);
+			res.send(result);
+		});
+		// Add new item
+		app.post('/product/additem', async (req, res) => {
+			const email = req.body;
+			const addItemData = req.body;
+			const filter = {email: email};
+			const options = {upsert: true};
+			const updateDoc = {$set: addItemData};
 			const result = await productCollection.updateOne(filter, updateDoc, options);
 			res.send(result);
 		});
