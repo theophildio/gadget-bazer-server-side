@@ -66,8 +66,22 @@ async function run() {
 			const result = await productCollection.updateOne(filter, updateDoc, options);
 			res.send(result);
 		});
-		// Delete product
+		// Get items by email
+		app.get('/myitems/:email', async (req, res) => {
+			const email = req.params.email;
+      const query = {email: email};
+      const product = (await productCollection.find(query).toArray()).reverse();
+      res.send(product);
+		});
+		// Delete manage inventory products
 		app.delete('/product/:id', async (req, res) => {
+			const id = req.params.id;
+			const filter = {_id: ObjectId(id)};
+			const result = await productCollection.deleteOne(filter);
+			res.send(result);
+		})
+		//  Delete my items
+		app.delete('/myitem/:id', async (req, res) => {
 			const id = req.params.id;
 			const filter = {_id: ObjectId(id)};
 			const result = await productCollection.deleteOne(filter);
